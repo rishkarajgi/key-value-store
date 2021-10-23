@@ -1,0 +1,7 @@
+name,Jane Doe
+email,jdoe@example.com
+course,"Experiments, Science, and Fashion in Nanophotonics"
+gpa,3.0
+student,"{""fname"": ""mani"", ""lname"": ""bhushan"", ""mob"": 8978937498}"
+student,"{""fname"": ""money"", ""lname"": ""bhushan"", ""mob"": 8978937498}"
+student,-1

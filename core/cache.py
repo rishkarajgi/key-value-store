@@ -1,90 +1,74 @@
 import csv 
+import json
 
-class KVCache:
-    def __init__(self, capacity):
-        self.capacity = capacity
+class KVStore:
+    def __init__(self):
         self.cache = dict()
 
     def get(self, key):
         if (key not in self.cache):
-            return -1
-        
-        return self.cache[key]
+            self.read_file_to_cache()
+            print(self.cache)
+            if (key not in self.cache):
+                return -1
+        print("Type: ({})".format(type(self.cache[key])))
+        value = json.loads(self.cache[key])
+        print(type(value))
+        return value
     
-    def put(self, key, value):
-        if (key not in self.cache):
-            file_contents = self.read_file_contents()
-            if (key not in file_contents):
-                print("key not found. adding new key")
-                self.cache[key] = value
-                print(self.cache)
-                self.write_to_file(key, value)
-            else:
-                print(file_contents[key])
-                if (file_contents[key] == '-1'):
-                    print("writing key: " + str(key) + " value: " + str(value))
+    def put(self, payload):
+        for key, value in payload.items():
+            if (isinstance(key, (bytes, bytearray))):
+                key = str(key.decode("utf-8"))
+            value = json.dumps(value)
+            if (key not in self.cache):
+                self.read_file_to_cache()
+                if (key not in self.cache):
+                    print("Key not found! Adding new key...")
+                    self.cache[key] = value
                     self.write_to_file(key, value)
-                    file_contents[key] = value
-                self.cache = file_contents
-        else:
-            print("Key: " + str(key) + " present in cache")
+                else:
+                    if (self.cache[key] == '-1'):
+                        print("writing key: " + str(key) + " value: " + str(value))
+                        self.write_to_file(key, value)
+                        self.cache[key] = value
+            else:
+                print("Key: ({}) present in cache".format(str(key)))
     
-    def update(self, key, value):
-        if (key not in self.cache):
-            file_contents = self.read_file_contents()
-            if (key not in file_contents):
-                self.put(key, value)
-        else:
-            self.cache[key] = value
-            self.write_to_file(key, value)
+    def update(self, payload):
+        print("INSIDE UPDATE")
+        for key, value in payload.items():
+            if (isinstance(key, (bytes, bytearray))):
+                key = str(key.decode("utf-8"))
+            value = json.dumps(value)
+            self.read_file_to_cache()
+            if (key not in self.cache):
+                self.put({key: value})
+            else:
+                self.cache[key] = value
+                self.write_to_file(key, value)
 
     def delete(self, key):
         if (key in self.cache):
             del self.cache[key]
             self.write_to_file(key, -1)
         else:
-            file_contents = self.read_file_contents()
+            self.read_file_to_cache()
             self.write_to_file(key, -1)
-
-    
-    def print_contents(self):
-        for key, value in self.cache.items():
-            print("Key:" + str(key) + " Value: " + str(value))
     
     def write_to_file(self, key, value):
         with open('data.csv','a') as f:
             w = csv.writer(f)
             w.writerow([key,value])
     
-    def read_file_contents(self):
+    def read_file_to_cache(self):
         with open('data.csv', mode ='r')as file:
             # reading the CSV file
             csvFile = csv.reader(file)
             # displaying the contents of the CSV file
-            mydict = dict((int(rows[0]),rows[1]) for rows in csvFile)
-            return mydict
+            mydict = dict((rows[0], rows[1]) for rows in csvFile)
+            for key, value in mydict.items():
+                if(key not in self.cache):
+                    self.cache[key] = value
 
     
-
-
-
-
-# cache = KVCache(10)
-# cache.put(1,'abc')
-# cache.put(2,'xyz')
-# cache.update(1,'qwe')
-# cache.delete(1)
-# cache.put(1, 'efg')
-# cache.put(3, 'jkl')
-# cache.update(3, 'opq')
-# cache.delete(3)
-# cache.print_contents()
-# cache.delete(1)
-# cache.print_contents()
-
-# cache.put(2,'def')
-# cache.put(2,'def')
-# cache.update(2,'xyz')
-# cache.print_contents()
-
-# cache.read_file_contents()
