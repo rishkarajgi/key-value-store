@@ -20,28 +20,43 @@ JSONArray = List[Any]
 JSONStructure = Union[JSONArray, JSONObject]
 
 
+
+@app.get("/health-check")
+async def get():
+    return {
+            "msg": "Hello World"
+        }
+
 @app.post("/store")
 async def add(request: JSONStructure = None):
     store.put(request)
-    return {"received_data": request}
+    return store
 
-@app.get("/store/")
-async def root(key):
+@app.get("/store")
+async def get(key):
     value = store.get(key)
     return {"key": key, "value": value}
 
 @app.get("/store/all")
-async def root():
+async def get_all():
     if len(store.cache) == 0:
         store.read_file_to_cache()
     return store.cache
 
 @app.put("/store")
-async def root(request: JSONStructure = None):
+async def update(request: JSONStructure = None):
     store.update(request)
     return store
 
-@app.delete("/store/")
-async def root(key):
+@app.delete("/store")
+async def delete(key):
     store.delete(key)
     return store.cache
+
+@app.delete("/store/flush")
+async def flush():
+    store.flush_file()
+    return {
+            "message": "Cache cleared", 
+            "cache": store.cache
+        }
