@@ -5,6 +5,9 @@ import sys
 
 __location__ = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
 file_path = os.path.join(__location__, 'data.csv')
+
+DELETED_FLAG = '-1'
+
 class KVStore:
     def __init__(self):
         self.cache = dict()
@@ -60,7 +63,6 @@ class KVStore:
             self.write_to_file(key, -1)
         else:
             self.write_to_file(key, -1)
-            self.read_file_to_cache()
         return 200, "Key deleted successfully"
     
     def write_to_file(self, key, value):
@@ -75,7 +77,7 @@ class KVStore:
             # displaying the contents of the CSV file
             mydict = dict((rows[0], rows[1]) for rows in csvFile)
             for key, value in mydict.items():
-                if(key not in self.cache and value != -1):
+                if(key not in self.cache and value != DELETED_FLAG):
                     self.cache[key] = value
     
     def flush_file(self):
