@@ -1,5 +1,14 @@
 {
-    "name": "foo", 
-    "age": "20", 
-    "description": "The Foo Barters"
+    "name": "Joshua Shelton",
+    "phone": "1-511-777-4304",
+    "email": "eleifend@tortoratrisus.org",
+    "address": "Ap #195-5807 Quisque Rd.",
+    "list": 17,
+    "country": "Vietnam",
+    "region": "Bourgogne",
+    "postalZip": "29725",
+    "text": "ipsum dolor sit amet, consectetuer adipiscing elit. Aliquam auctor, velit",
+    "numberrange": 6,
+    "currency": "$72.48",
+    "alphanumeric": "BCD18THH8ME"
 }
