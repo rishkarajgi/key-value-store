@@ -1,4 +1,4 @@
-from fastapi import FastAPI, Request
+from fastapi import FastAPI, Request, HTTPException
 from core.cache import KVStore
 from pydantic import BaseModel
 from typing import Optional, Dict, Any, AnyStr, List, Union
@@ -35,6 +35,8 @@ async def add(request: JSONStructure = None):
 @app.get("/store")
 async def get(key):
     value = store.get(key)
+    if value == -1:
+        raise HTTPException(status_code=404, detail="No data found!")
     return {"key": key, "value": value}
 
 @app.get("/store/all")

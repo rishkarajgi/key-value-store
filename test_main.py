@@ -11,14 +11,17 @@ def test_health_check():
     assert response.json() == {"msg": "Hello World"}
 
 def test_add_key():
-    payload = {
-                "name": "foo", 
-                "age": "20", 
-                "description": "The Foo Barters"
-            }
+    # Flush all contents
+    client.delete("/store/flush")
+    # Add new key
+
+    # Read test json data from file
+    f = open('test_data.json',)
+    test_payload = json.load(f)
+    
     response = client.post(
         "/store",
-        json = payload,
+        json = test_payload,
     )
     assert response.status_code == 200
 
@@ -32,6 +35,11 @@ def test_get_key():
     assert response.status_code == 200
     response = response.json()
     assert response["key"] == "name" and response["value"] == "foo"
+
+def test_get_key_absent():
+    response = client.get("/store?key=abc")
+    assert response.status_code == 404
+    assert response.json() == { "detail": "No data found!"}
 
 def test_update():
     payload = {
