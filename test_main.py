@@ -30,16 +30,15 @@ def test_get_all():
     assert response.status_code == 200
    
 
-def test_get_key():
-    response = client.get("/store?key=name")
+def test_get_key(key = "name"):
+    response = client.get("/store?key={}".format(key))
     assert response.status_code == 200
     response = response.json()
-    assert response["key"] == "name" and response["value"] == "foo"
+    assert response[key] == "foo"
 
-def test_get_key_absent():
-    response = client.get("/store?key=abc")
+def test_get_key_absent(key = "abc"):
+    response = client.get("/store?key={}".format(key))
     assert response.status_code == 404
-    assert response.json() == { "detail": "No data found!"}
 
 def test_update():
     payload = {

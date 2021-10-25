@@ -10,12 +10,14 @@ class KVStore:
         self.cache = dict()
 
     def get(self, key):
+        # Ik key not present in memory fetch from file
         if (key not in self.cache):
             self.read_file_to_cache()
+
             if (key not in self.cache):
-                return -1
+                return 404, "Key not found!"
         value = json.loads(self.cache[key])
-        return value
+        return 200, value
     
     def put(self, payload):
         for key, value in payload.items():
@@ -43,18 +45,23 @@ class KVStore:
             value = json.dumps(value)
             self.read_file_to_cache()
             if (key not in self.cache):
-                self.put({key: value})
+                return 404, "Key not found!"
             else:
                 self.cache[key] = value
                 self.write_to_file(key, value)
+                return 200, "Success"
 
     def delete(self, key):
+        self.read_file_to_cache()
+        if key not in self.cache:
+            return 404, "Key not found!"
         if (key in self.cache):
             del self.cache[key]
             self.write_to_file(key, -1)
         else:
             self.write_to_file(key, -1)
             self.read_file_to_cache()
+        return 200, "Key deleted successfully"
     
     def write_to_file(self, key, value):
         with open(file_path,'a') as f:

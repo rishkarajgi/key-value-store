@@ -15,3 +15,6 @@ Steps:
  - ``http://127.0.0.1:8000/docs``
 5. To run tests 
  - ``pytest test_main.py``
+
+ Postman collection link
+ ```https://www.getpostman.com/collections/221e675cebcf1fc16655```
